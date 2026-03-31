@@ -15,7 +15,7 @@ export const getCurretUser = async () => {
     }
 }
 
-export const CreateProject = async ({ item} : CreateProjectParams):
+export const CreateProject = async ({ item, visibility} : CreateProjectParams):
 Promise<DesignItem | null | undefined> => {
     const projectId = item.id;
 
@@ -51,16 +51,17 @@ Promise<DesignItem | null | undefined> => {
 
     const payload = {
         ...rest,
+        visibility: visibility || "private",
         sourceImage: resolvedSource,
         renderedImage: resolvedRender,
-    }
+    } as DesignItem;
 
     try {
-
+        await puter.kv.set(`project_${projectId}`, payload);
         return payload; 
     }
     catch(e){
-        console.log('Failed to save the project');
+        console.log('Failed to save the project:', e);
         return null;
     }
 }

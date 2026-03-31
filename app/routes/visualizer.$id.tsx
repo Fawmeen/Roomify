@@ -1,18 +1,34 @@
-import React from 'react'
-import { useLocation } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
+import puter from '@heyputer/puter.js';
+
 const Visualizer = () => {
     const location = useLocation();
-    const {initialImage, name} = location.state || {};
+    const { id } = useParams();
+    const [data, setData] = useState<any>(location.state || {});
+
+    useEffect(() => {
+        if (!data.initialImage && !data.sourceImage && id) {
+            puter.kv.get(`project_${id}`).then((fetched: any) => {
+                if (fetched) {
+                    setData((prev: any) => ({ ...fetched, ...prev }));
+                }
+            }).catch(console.error);
+        }
+    }, [id]);
+
+    const name = data.name || 'untitled project';
+    const image = data.initialImage || data.sourceImage;
 
   return (
      <section>
-        <h1> {name || 'untitled project'}</h1>
+        <h1> {name}</h1>
 
         <div>
-            {initialImage && (
+            {image && (
                 <div className="image-container">
                     <h2>Source Image</h2>
-                    <img src = {initialImage} alt = "source"/>
+                    <img src={image} alt="source"/>
                 </div>
             )}
         </div>

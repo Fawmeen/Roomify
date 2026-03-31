@@ -57,13 +57,13 @@ export default function App() {
           isSignedIn: !!user,
           userName: user?.username || null,
           userId: user?.uuid || null,
-        })
+        });
+        return true;
     }
     catch {
       setAuthState(DEFAULT_AUTH_STATE);
       return false;
     }
-
   }
   useEffect(() => {
     refreshAuth();

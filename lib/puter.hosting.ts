@@ -19,8 +19,9 @@ export const getOrCreateHostingConfig = async (): Promise<HostingConfig | null> 
 }
 
 export const uploadImageToHosting = async ({hosting, url, projectId, label}: StoreHostedImageParams): Promise<HostedAsset | null> => {
-    if(!hosting || !url) return null;
+    if(!url) return null;
     if(isHostedUrl(url)) return {url};
+    if(!hosting) return null;
 
     try{
          const resolved = label === "rendered" ? await imageUrlToPngBlob(url).then((blob) => blob? {blob, contentType: 'image/png'}: null)
